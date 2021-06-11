@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+error_reporting(E_ALL);
+ini_set('display_errors', 'TRUE');
+ini_set('display_startup_errors', 'TRUE');
+
 $sports = ['Football', 'Tennis', 'Ping pong', 'Volley ball', 'Rugby', 'Horse riding', 'Swimming', 'Judo', 'Karate'];
 
 function openConnection(): PDO
@@ -69,7 +73,14 @@ elseif(isset($_POST['delete'])) {
 }
 
 //@todo Invalid query?
-$handle = $pdo->prepare('SELECT id, concat_ws(firstname, lastname, " ") AS name, sport FROM user LEFT JOIN sport ON id = sport.user_id where year = :year order by sport');
+$handle = $pdo->prepare(
+    'SELECT user.id, concat_ws(firstname, lastname, " ") AS name, sport 
+    FROM user 
+    LEFT JOIN sport 
+    ON user.id = sport.user_id 
+    where year = :year 
+    order by sport');
+
 $handle->bindValue(':year', date('Y'));
 $handle->execute();
 $users = $handle->fetchAll();
